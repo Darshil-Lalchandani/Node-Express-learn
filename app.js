@@ -1,23 +1,16 @@
-const http = require("http");
-const { readFileSync } = require("fs");
+const express = require("express");
+const app = express();
 
-const home = readFileSync("./index.html", "utf-8");
-const homeStyles = readFileSync("./index.css", "utf-8");
-
-const server = http.createServer((req, res) => {
-  const url = req.url;
-  if (url === "/") {
-    res.writeHead(200, { "content-type": "text/html" });
-    res.write(home);
-    res.end();
-  } else if (url === "/index.css") {
-    res.writeHead(200, { "content-type": "text/css" });
-    res.write(homeStyles);
-    res.end();
-  } else {
-    res.writeHead(404, { "content-type": "text/plain" });
-    res.end("Page not found");
-  }
+app.get("/", (req, res) => {
+  console.log(req.url);
+  res.status(200).send("Home page");
 });
 
-server.listen(5000);
+app.all("*", (req, res) => {
+  console.log(req.url);
+  res.status(404).send("No results found");
+});
+
+app.listen(5000, () => {
+  console.log("Listening on 5000");
+});
