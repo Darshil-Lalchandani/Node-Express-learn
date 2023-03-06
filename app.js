@@ -1,21 +1,27 @@
 const express = require("express");
-const path = require("path");
 const app = express();
-
-// middleware to automatically serve all static files (built in middleware),
-// needed as browser will send request to backend for css files, etc, which are referenced in .html
-// need to serve explicitly in case of node
-// all files that server doesnt need to change are called static like svgs, css, some js as well
-app.use(express.static("./public"));
+const { data } = require("./data");
 
 app.get("/", (req, res) => {
-  res.status(200).send("Home Page");
+  res.status(200).send('<h1>Welcome</h1><a href="/api/users"> Users </a>');
 });
 
-app.get("/hello", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "index.html"));
+app.get("/api/users", (req, res) => {
+  const newData = data.map((d) => {
+    const { id, name } = d;
+    return { id, name };
+  });
+  res.status(200).json(newData);
+});
+
+app.get("/api/users/:userID", (req, res) => {
+  const { userID } = req.params;
+  const user = data.filter((u) => u.id === Number(userID));
+  user.length > 0
+    ? res.status(200).json(user)
+    : res.status(404).send("No Data Found");
 });
 
 app.listen(5000, () => {
-  console.log("Listening on port 5000");
+  console.log("Server listening on port 5000");
 });
