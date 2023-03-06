@@ -3,11 +3,13 @@ const app = express();
 const { data } = require("./data");
 const { logger } = require("./logger");
 
-app.get("/", logger, (req, res) => {
+app.use(logger);
+
+app.get("/", (req, res) => {
   res.status(200).send('<h1>Welcome</h1><a href="/api/users"> Users </a>');
 });
 
-app.get("/api/users", logger, (req, res) => {
+app.get("/api/users", (req, res) => {
   const { sort = "asc", search, limit } = req.query; //query param, default val = asc
 
   let newData = data.map((d) => {
@@ -23,7 +25,7 @@ app.get("/api/users", logger, (req, res) => {
   return res.status(200).json(newData); // can add return as well, to ensure only one res in a route
 });
 
-app.get("/api/users/:userID", logger, (req, res) => {
+app.get("/api/users/:userID", (req, res) => {
   const { userID } = req.params;
   const user = data.filter((u) => u.id === Number(userID));
   user.length > 0
@@ -31,7 +33,7 @@ app.get("/api/users/:userID", logger, (req, res) => {
     : res.status(404).send("No Data Found");
 });
 
-app.get("/api/query", logger, (req, res) => {
+app.get("/api/query", (req, res) => {
   console.log(req.query);
   res.status(200).send("Received");
 });

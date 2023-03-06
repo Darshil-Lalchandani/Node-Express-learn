@@ -12,3 +12,5 @@ req => middleware => res
 add middleware function name in route handler; req, res and next are automatically passed to middleware function
 
 Always have next() in middleware so that the next function handles the request
+
+app.use(middlewareFunction) will apply middleware to all functions below it. Can also optional take the path argu
