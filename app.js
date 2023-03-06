@@ -1,12 +1,13 @@
 const express = require("express");
 const app = express();
 const { data } = require("./data");
+const { logger } = require("./logger");
 
-app.get("/", (req, res) => {
+app.get("/", logger, (req, res) => {
   res.status(200).send('<h1>Welcome</h1><a href="/api/users"> Users </a>');
 });
 
-app.get("/api/users", (req, res) => {
+app.get("/api/users", logger, (req, res) => {
   const { sort = "asc", search, limit } = req.query; //query param, default val = asc
 
   let newData = data.map((d) => {
@@ -19,10 +20,10 @@ app.get("/api/users", (req, res) => {
   if (search)
     newData = newData.filter((u) => u.name.toLowerCase().includes(search));
 
-  res.status(200).json(newData);
+  return res.status(200).json(newData); // can add return as well, to ensure only one res in a route
 });
 
-app.get("/api/users/:userID", (req, res) => {
+app.get("/api/users/:userID", logger, (req, res) => {
   const { userID } = req.params;
   const user = data.filter((u) => u.id === Number(userID));
   user.length > 0
@@ -30,7 +31,7 @@ app.get("/api/users/:userID", (req, res) => {
     : res.status(404).send("No Data Found");
 });
 
-app.get("/api/query", (req, res) => {
+app.get("/api/query", logger, (req, res) => {
   console.log(req.query);
   res.status(200).send("Received");
 });
