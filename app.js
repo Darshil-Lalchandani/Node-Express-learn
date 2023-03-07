@@ -1,11 +1,15 @@
 const express = require("express");
 const app = express();
+const morgan = require("morgan");
 const { data } = require("./data");
 const { logger } = require("./logger");
 
+//multiple middleware functions can be added in an array
 app.use(logger);
+app.use(morgan("tiny"));
 
 app.get("/", (req, res) => {
+  console.log(req.role);
   res.status(200).send('<h1>Welcome</h1><a href="/api/users"> Users </a>');
 });
 
